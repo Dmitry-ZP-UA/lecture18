@@ -19,9 +19,11 @@ class Product
      */
     private $price;
 
-    public function __construct(int $id)
+    public function __construct(int $id, string $title, float $price)
     {
         $this->id = $id;
+        $this->title = $title;
+        $this->price = $price;
     }
 
     /**
