@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use LogicException;
+
 class Product
 {
     /**
@@ -69,6 +71,11 @@ class Product
      */
     public function setPrice(float $price): void
     {
+        if ($price < 0)
+        {
+            throw new LogicException('Price cannot be negative');
+        }
         $this->price = $price;
     }
+
 }
