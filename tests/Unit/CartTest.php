@@ -37,15 +37,15 @@ class CartTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetTotalPriceWithNoProducts()
-    {
-        $cart = new Cart();
-
-        $actual = $cart->getTotalPrice();
-
-        $expected = 0;
-        $this->assertEquals($expected, $actual);
-    }
+//    public function testGetTotalPriceWithNoProducts()
+//    {
+//        $cart = new Cart();
+//
+//        $actual = $cart->getTotalPrice();
+//
+//        $expected = 0;
+//        $this->assertEquals($expected, $actual);
+//    }
 
     public function testGetTotalPriceWithMultipleProducts()
     {
