@@ -49,46 +49,56 @@ class ProductPriceCalculatorTest extends TestCase
         return new Collection($productsArr);
     }
 
-
-    public function testProductsWithSale()
-    {
+    /**
+     * @param $saleInterval
+     * @param $salePercent
+     * @param $currentDatetime
+     * @param $registerDatetime
+     * @param $productPrices
+     * @param $expected
+     *
+     * @dataProvider calculatorProvider
+     */
+    public function testProductsCalculator(
+        $saleInterval,
+        $salePercent,
+        $currentDatetime,
+        $registerDatetime,
+        $productPrices,
+        $expected
+    ) {
         $config = [
-            'sale_interval' => '2 day',
-            'sale_percent' => 50
+            'sale_interval' => $saleInterval,
+            'sale_percent' => $salePercent
         ];
 
-        $calculator = $this->getCalculator(Carbon::parse('2018-10-27'), $config);
+        $calculator = $this->getCalculator(Carbon::parse($currentDatetime), $config);
 
         $user = new User();
-        $user->setRegisterDatetime(Carbon::parse('2018-10-26'));
+        $user->setRegisterDatetime(Carbon::parse($registerDatetime));
 
-        $products = $this->getProductsCollection([
-            15, 5
-        ]);
+        $products = $this->getProductsCollection($productPrices);
 
         $actual = $calculator->getTotalPrice($products, $user);
-        $expected = 10;
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testProductsWithoutSale()
+    public function calculatorProvider()
     {
-        $config = [
-            'sale_interval' => '2 day',
-            'sale_percent' => 50
+        return [
+            // Аргументы к нашему тестовому методу
+            [
+                '2 day',      // <---- Сколько дней после регистрации
+                //       пользователя действует скидка
+                50,           // <---- Процент скидки, который мы указываем в конфиге
+                '2018-10-27', // <---- Текущая дата
+                '2018-10-26', // <---- Дата регистрации пользователя
+                [15, 5],      // <---- Цена продуктов, которые купил пользователь
+                10            // <---- Сумма покупки
+            ],
+            ['2 day', 50, '2018-10-30', '2018-10-26', [15, 5], 20],
+            ['2 day', 50, '2018-10-30', '2018-10-26', [], 0]
         ];
-        $calculator = $this->getCalculator(Carbon::parse('2018-10-30'), $config);
-        $user = new User();
-        $user->setRegisterDatetime(Carbon::parse('2018-10-26'));
-
-        $products = $this->getProductsCollection([
-            15, 5
-        ]);
-
-        $actual = $calculator->getTotalPrice($products, $user);
-        $expected = 20;
-
-        $this->assertEquals($expected, $actual);
     }
 }
